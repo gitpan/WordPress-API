@@ -1,0 +1,22 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         WordPress-API
+version:      1.07
+version_from: lib/WordPress/API.pm
+installdirs:  site
+requires:
+    Carp:                          1
+    Cwd:                           3
+    Date::Manip:                   5
+    Exporter:                      0
+    File::Type:                    0
+    MIME::Base64:                  3
+    Smart::Comments:               1
+    Test::Simple:                  0
+    Time::Format:                  1
+    Time::Local:                   1
+    WordPress::XMLRPC:             1
+    YAML:                          0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.30
