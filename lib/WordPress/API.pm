@@ -5,7 +5,7 @@ use WordPress::API::MediaObject;
 use WordPress::API::Page;
 use base 'WordPress::XMLRPC';
 use vars qw($VERSION);
-$VERSION = sprintf "%d.%02d", q$Revision: 1.7 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.8 $ =~ /(\d+)/g;
 
 
 sub new {
@@ -14,6 +14,7 @@ sub new {
    bless $self,$class;
    return $self;
 }
+
 
 
 
@@ -250,6 +251,7 @@ Get the blog url.
 
 =head1 SEE ALSO
 
+Date::Manip
 WordPress::API::Category - abstraction to a category
 WordPress::API::MediaObject - abstraction to a 'media object'
 WordPress::API::Page - abstraction to a 'page'

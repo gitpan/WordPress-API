@@ -172,8 +172,9 @@ argument is string
 
 =head3 dateCreated()
 
-setget perl method
-argument is string
+Setget perl method.
+Argument is string.
+Argument is checked by Date::Manip
 
 =head3 wp_page_order()
 
@@ -343,6 +344,8 @@ And then you can upload to server.
 
 =head1 SEE ALSO
 
+WordPress::Base::Date
+Date::Manip
 WordPress::API
 WordPress::XMLRPC
 YAML

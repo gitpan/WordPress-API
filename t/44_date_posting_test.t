@@ -30,6 +30,7 @@ $w->description('this is test content');
 
 ok(1,'setting date.. ');
 my $d = $w->dateCreated('20080731');
+ok( $d, "dateCreated() returns");
 ### $d
 ### saving.....
 ok($w->save, 'posted') or die;

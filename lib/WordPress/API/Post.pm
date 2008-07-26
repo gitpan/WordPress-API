@@ -134,7 +134,8 @@ These are all inherited from WordPress::Base::Data::Post
 
 =head3 dateCreated()
 
-Setget method.
+Setget perl method.
+Argument is string.
 Argument is checked by Date::Manip
 
 =head3 date_created_gmt()
@@ -316,6 +317,8 @@ And then you can upload to server.
 
 =head1 SEE ALSO
 
+WordPress::Base::Date
+Date::Manip
 WordPress::API
 WordPress::XMLRPC
 YAML
