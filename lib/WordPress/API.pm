@@ -5,7 +5,7 @@ use WordPress::API::MediaObject;
 use WordPress::API::Page;
 use base 'WordPress::XMLRPC';
 use vars qw($VERSION);
-$VERSION = sprintf "%d.%02d", q$Revision: 1.8 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.9 $ =~ /(\d+)/g;
 
 
 sub new {
@@ -186,7 +186,10 @@ if you pass an id, we attemp to load, if we cannot, dies
 Optional arg is abs path to media file, likely image or pdf, etc
 return WordPress::API::MediaObject object
 
+=head2 category()
 
+Optional argument is an id of the category that exists.
+Returns WordPress::API::Category object.
 
 
 =head1 XMLRPC METHODS

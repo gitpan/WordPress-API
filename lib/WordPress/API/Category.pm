@@ -4,6 +4,8 @@ use base 'WordPress::Base::Object';
 use strict;
 no strict 'refs';
 use Carp;
+use LEOCHARRE::DEBUG;
+#use Smart::Comments '###';
 
 # must happen before make xmlrpc aliases
 *WordPress::XMLRPC::getCategory  = \&xmlrpc_get;
@@ -13,7 +15,15 @@ __PACKAGE__->make_xmlrpc_aliases();
 # there is no getCategory, need one
 # should be in WordPress::XMLRPC
 
-
+sub new {
+   my($class,$self) = @_;
+   unless ( $self ){
+      print STDERR "nothing in tow\n";
+   }
+   $self ||={};
+   bless $self, $class;
+   return $self;
+}
 
 # overiddes from WordPress::Base::Object::make_xmlrpc_aliases()
 # # this is a hack
@@ -22,10 +32,17 @@ sub xmlrpc_get {
    my $self = shift;
    my $arg = shift; # takes id or category name
 
-   defined $arg 
-      or ($arg = $self->categoryId)
-      or ($arg = $self->categoryName)
-      or croak('missing argument, id or categoryName not set either, as alternative.');
+   unless( defined $arg ){
+      if ($arg = $self->categoryId){
+         print STDERR ("found category by id");
+      }
+      elsif ( $arg = $self->categoryName ){
+         print STDERR ("found category by name");
+      }
+      else {
+         croak('missing argument, id or categoryName not set either, as alternative.');
+      }
+   }
 
    # should return struct
    
@@ -37,6 +54,8 @@ sub xmlrpc_get {
       else {
          $struct->{categoryName} eq $arg or next;
       }
+      debug(__PACKAGE__."::xmlrpc_get() : '$arg'  found.") if DEBUG;
+
       return $struct;
    }
 
@@ -45,11 +64,11 @@ sub xmlrpc_get {
 }
 
 sub xmlrpc_edit {
-   croak("Sorry, you cannot edit categories.");
+   croak("48 Sorry, you cannot edit categories.". __LINE__ );
 }
 
 sub xmlrpc_delete {
-   croak("Sorry, you cannot delete categories.");
+   croak("52 Sorry, you cannot delete categories.".__LINE__);
 }
 
 # need this alias
@@ -64,19 +83,28 @@ sub xmlrpc_delete {
 
 sub save {
    my $self = shift;
+
    $self->username or die('missing username');
-   $self->password or die('missing password');   
-   
-   if( $self->id ) {
-      croak("Sorry, you cannot edit categories.");      
+   $self->password or die('missing password');  
+
+
+   my $c={};
+   $c->{name}        =  $self->categoryName or die('missing categoryName');
+   #$c->{slug}        = ($self->slug || undef); # this is messed up too??
+   $c->{description} = ($self->description || undef);
+   $c->{parent_id}    = ($self->parentId || undef);
+   #$c->{parentId}    = ($self->parentId || undef); # hah.. guess what. .. to set 
+   # you have to use parent_id, but to retrieve it's parentId !!! WHAT A MESS
+   #### save called... 
+   ### $c 
+   if( my $id = $self->id ) {
+      croak("(id [$id]was set) Sorry, you cannot edit categories err 90");      
       #return $self->xmlrpc_edit( $self->id, $self->structure_data );
    }
    
-   #print STDERR "\t--had no id\n";
-   my $cn = $self->categoryName or die('missing categoryName');
 
-   my $id  = $self->newCategory( $cn )  # from WordPress::XMLRPC
-      or confess("cant get id on saving cat '$cn'".$self->errstr);
+   my $id  = $self->newCategory( $c )  # from WordPress::XMLRPC
+      or confess("cant get id on saving cat '$$c{name}'".$self->errstr);
    #print STDERR "\t--have id $id\n";
    
 
@@ -100,16 +128,45 @@ __END__
 
 WordPress::API::Category
 
-=head1 CAVEATS
+=head1 SYNOPSIS
 
-I am having problems with WordPress::XMLRPC::newCategory(), until I resolve that, this module is on hold.
+Ideally you wouldn't use this object directly.
+   
+   my $wp = new WordPress::API({
+      proxy => 'http://whatvr.net/xmlrpc.php',
+      username => 'pacman',
+      password => 'misspacman',
+   });
+
+   # create a new category
+   
+   my $cat = $wp->category;
+   $cat->categoryName('Writing Instruments');
+
+   $cat->save or die($wp->errstr);
+
+   # how would we access via browser?
+   $cat->htmlUrl;
+   
+   # let's create a sub category ..
+   my $parent_category_id = $cat->id;
+
+   my $subcat = $wp->category();
+
+   $subcat->categoryName('Pencils');
+   $subcat->parentID( $parent_category_id );
+   
+   my $subcatid = $subcat->save; # remember save returns id
+
+
 
 =head1 How to id the category
 
-To fetch a category and its attributes, you can provide an id or a categoryName.
+To fetch a category and its attributes, you can provide an id (or a categoryName?)
 This is required before you call load() to fetch the data from the server.
 
-   $cat->categoryName('Super Stuff');
+   $cat->categoryName('Super Stuff'); # not sure about this yet
+
    $cat->id(34);
 
 =head1 METHODS
@@ -118,37 +175,46 @@ This is required before you call load() to fetch the data from the server.
 
 =head3 categoryId()
 
-setget perl method
-argument is number
+Setget perl method.
+Argument is number.
 
 =head3 categoryName()
 
-setget perl method
-argument is string
+Setget perl method.
+Argument is string.
 
 =head3 rssUrl()
 
-setget perl method
-argument is url
+Setget perl method.
+Argument is url.
+Not used when creating a new category.
 
 =head3 parentId()
 
-setget perl method
-argument is number
+Setget perl method.
+Argument is number.
 
 =head3 htmlUrl()
 
-setget perl method
-argument is url
+Setget perl method.
+Argument is url.
+Not used when creating new category.
 
 =head3 description()
 
-setget perl method
-argument is string
+Setget perl method.
+Argument is string. 
+
+=head4 CAVEAT
+
+This is buggy, you can create a new category with a description, but you can't fetch it.
+See L<WordPress::XMLRPC> getCategory() for more.
+So, the description if set *is* stored in your blog, but won't be fetched.
 
 =head2 object_type()
 
-returns string 'Category' 
+Returns string 'Category'.
+
 
 =head2 load()
 
@@ -165,9 +231,12 @@ Returns hashref, (but loads data into object)..
          $cat->load or die( $cat->errstr );
    print $cat->rssUrl;
 
+load() is called by save().
+
 =head2 save()
 
 Unfortunately wordpress' xmlrpc command can't edit categories.
+But you can use save to create a new category.
 
 
 =head1 MAKING NEW CATEGORY
@@ -176,6 +245,7 @@ You cannot save changes to a category, you can only view existing categories and
 If you load() a category you cannot save() it. You can save() and then view its url, etc, though.
 
    $cat->categoryName('House Inspections');
+   $cat->description('hi this is a description'); # will not show up after save, wordpress bug
    my $id = $cat->save;
 
    # or
@@ -185,6 +255,14 @@ If you load() a category you cannot save() it. You can save() and then view its 
    # now you can make a new post and set the parent to that category..
    #
    new WordPress::API::Post ....
+
+=head1 CAVEATS
+
+In development.
+
+=head1 SEE ALSO
+
+WordPress::API
 
 
 

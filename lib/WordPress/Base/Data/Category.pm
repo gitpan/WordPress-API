@@ -58,9 +58,10 @@ argument is url
 =head3 description()
 
 setget perl method
-argument is string
+argument is string.
+buggy!
 
-=haed2 object_type()
+=head2 object_type()
 
 returns 'Category'
 
