@@ -6,10 +6,8 @@ use WordPress::API::Post;
 
 use Smart::Comments '###';
 
-ok(1,'starting test.');
+my $conf = skiptest();
 
-
-my $conf = tconf() or exit;
 
 
 

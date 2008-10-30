@@ -5,8 +5,7 @@ use WordPress::API::MediaObject;
 use WordPress::API::Page;
 use base 'WordPress::XMLRPC';
 use vars qw($VERSION);
-$VERSION = sprintf "%d.%02d", q$Revision: 1.9 $ =~ /(\d+)/g;
-
+$VERSION = sprintf "%d.%02d", q$Revision: 1.10 $ =~ /(\d+)/g;
 
 sub new {
    my ($class, $self) = @_;
@@ -14,7 +13,6 @@ sub new {
    bless $self,$class;
    return $self;
 }
-
 
 
 
@@ -56,13 +54,12 @@ sub media {
 }
 
 sub _childargs {
-   my $self = shift;
-   return {
-      server => $self->server,
-      username => $self->username,
-      password => $self->password,
-      proxy => $self->proxy,
-   };
+   {
+      server => $_[0]->server,
+      username => $_[0]->username,
+      password => $_[0]->password,
+      proxy => $_[0]->proxy,
+   }
 }
 
 
@@ -88,18 +85,12 @@ sub _bloginfo {
       }
    }      
 
-   return $self->{_bloginfo}->{$self->blog_id};
+   $self->{_bloginfo}->{$self->blog_id};
 }
 
-sub blog_name {
-   my $self = shift;
-   return $self->_bloginfo->{blogName};   
-}
+sub blog_name { $_[0]->_bloginfo->{blogName} }
 
-sub blog_url {
-   my $self = shift;
-   return $self->_bloginfo->{url};
-}
+sub blog_url { $_[0]->_bloginfo->{url} }
 
 
 

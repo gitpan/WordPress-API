@@ -3,13 +3,14 @@ use strict;
 use warnings;
 use Carp;
 use Exporter;
-use vars qw(@ISA @EXPORT);
+use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
 @ISA = qw/Exporter/;
-@EXPORT = qw(__slurp __cleanup_html);
+@EXPORT_OK = qw(__slurp __cleanup_html slurp cleanup_html);
+@EXPORT = @EXPORT_OK;
+%EXPORT_TAGS = ( all => \@EXPORT_OK );
 
-
-
-
+*slurp = \&__slurp;
+*cleanup_html = \&__cleanup_html;
 
 
 sub __slurp {
@@ -55,18 +56,38 @@ sub __cleanup_html {
 
 __END__
 
+=pod
+
+=head1 NAME
+
+WordPress::Base::Text - text helpers
+
+
+=head1 SYNOPSIS
+
+   use WordPress::Base::Text;
+
+   my $content = slurp('./file');
+   my $clean_content = cleanup_html($content);
+
+   my $quick_clean = cleanup_html( slurp('./file');
+
+
+
 =head1 SUBS
 
 These are not oo
 
-=head2 __slurp()
+=head2 __slurp() and slurp()
 
 argument is abs path, returns content
 if file not there, returns undef
 
-=head2 __cleanup_html()
+=head2 __cleanup_html() and cleanup_html()
 
 argument is html text, returns cleaned up, takes out font tags, etc
+
+
 
 
 

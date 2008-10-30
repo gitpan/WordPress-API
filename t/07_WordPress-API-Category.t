@@ -3,15 +3,15 @@ use lib './lib';
 require './t/test.pl';
 use strict;
 use WordPress::API::Category;
+#use Smart::Comments '###';
 
-use Smart::Comments '###';
 
-my %c;
+
 use warnings;
-unless( %c = %{tconf()} ){
-   ok(1,'skipping');   
-   exit;
-}
+
+my $config = skiptest();
+
+my %c = %{$config};
 
 $WordPress::API::Category::DEBUG = 1;
 
@@ -180,6 +180,5 @@ sub ok_cat_empty {
 }
 
 
-1;
 
 

@@ -7,7 +7,7 @@ use WordPress::Base::Data::Category;
 use WordPress::Base::Data::Author; 
 use WordPress::Base::Data::Post;
 use WordPress::Base::Data::MediaObject; 
-use Smart::Comments '###';
+#use Smart::Comments '###';
 
 ok(1,'starting test.');
 

@@ -5,15 +5,7 @@ require './t/test.pl';
 use WordPress::API::Post;
 use Smart::Comments '###';
 
-ok(1,'starting test.');
-
-my $conf;
-unless ( $conf = tconf() ){
-   ok(1,'To test fully, you need to set up a ./t/wppost YAML file as per instructions in README');
-   exit;
-}
-
-
+my $conf = skiptest();
 
 
 

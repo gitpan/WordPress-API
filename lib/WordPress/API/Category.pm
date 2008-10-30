@@ -8,7 +8,7 @@ use LEOCHARRE::DEBUG;
 #use Smart::Comments '###';
 
 # must happen before make xmlrpc aliases
-*WordPress::XMLRPC::getCategory  = \&xmlrpc_get;
+#*WordPress::XMLRPC::getCategory  = \&xmlrpc_get;
 
 __PACKAGE__->make_xmlrpc_aliases();
 
@@ -23,44 +23,6 @@ sub new {
    $self ||={};
    bless $self, $class;
    return $self;
-}
-
-# overiddes from WordPress::Base::Object::make_xmlrpc_aliases()
-# # this is a hack
-*WordPress::XMLRPC::getCategory  = \&xmlrpc_get;
-sub xmlrpc_get {
-   my $self = shift;
-   my $arg = shift; # takes id or category name
-
-   unless( defined $arg ){
-      if ($arg = $self->categoryId){
-         print STDERR ("found category by id");
-      }
-      elsif ( $arg = $self->categoryName ){
-         print STDERR ("found category by name");
-      }
-      else {
-         croak('missing argument, id or categoryName not set either, as alternative.');
-      }
-   }
-
-   # should return struct
-   
-   # get all categories   
-   for my $struct ( @{ $self->getCategories } ){
-      if ( $arg=~/^\d+$/ ){
-         $struct->{categoryId} == $arg or next;
-      }
-      else {
-         $struct->{categoryName} eq $arg or next;
-      }
-      debug(__PACKAGE__."::xmlrpc_get() : '$arg'  found.") if DEBUG;
-
-      return $struct;
-   }
-
-   $self->errstr("Sorry, category '$arg' seems not to exist.");
-   return;
 }
 
 sub xmlrpc_edit {

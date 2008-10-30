@@ -6,11 +6,8 @@ use WordPress::API::MediaObject;
 
 
 
-my $c;
-unless( $c = tconf() ){
-   ok(1,'skipping');   
-   exit;
-}
+
+my $c = skiptest();
 
 
 

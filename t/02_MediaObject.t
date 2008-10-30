@@ -4,14 +4,11 @@ require './t/test.pl';
 use strict;
 use WordPress::API::MediaObject;
 
+
 unlink './t/saved.yml';
 
-my $c;
-unless( $c = tconf() ){
-   ok(1,'skipping');   
-   exit;
-}
 
+my $c = skiptest();
 
 
 
